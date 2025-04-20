@@ -2,6 +2,7 @@
     --bg: #ffffff;
     --text-color: #1d1d1f;
     --muted: #6e6e73;
+    --accent: #0071e3;
     --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 
@@ -9,11 +10,9 @@ html, body {
     margin: 0;
     padding: 0;
     background: var(--bg);
-    /* allow page to scroll */
 }
 
 .main {
-    height: 100%;
     overflow-y: auto;
     scroll-snap-type: y mandatory;
     scroll-behavior: smooth;
@@ -28,6 +27,7 @@ html, body {
     text-align: center;
     padding: 20px 40px;
     scroll-snap-align: start;
+    transition: opacity 0.3s ease;
 }
 
 .introTitle {
@@ -48,6 +48,9 @@ html, body {
 }
 
 .slide {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
     display: grid;
     grid-template-columns: 1fr 1fr;
     align-items: start;
@@ -55,7 +58,6 @@ html, body {
     gap: 20px;
     scroll-snap-align: start;
     border-bottom: 1px solid #e4e4e6;
-
     margin-bottom: 80px;
 }
 
@@ -63,6 +65,7 @@ html, body {
     .slide {
         grid-template-columns: 1fr;
         padding: 20px 20px;
+        text-align: center;
     }
 }
 
@@ -98,3 +101,8 @@ html, body {
 }
 
 .image:hover { transform: scale(1.03); }
+
+.appear {
+    opacity: 1 !important;
+    transform: translateY(0) !important;
+}
