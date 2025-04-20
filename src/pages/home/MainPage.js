@@ -3,108 +3,117 @@ import styles from './MainPage.module.css';
 
 const slides = [
     {
-        title: 'Платформа для договоренностей Promesa',
+        id: 'slide-0',
+        title: 'Единая платформа ведения OKR',
         description: [
-            'Инновационная платформа для фиксации и валидации договоренностей.',
-            'Promesa поможет структурировать соглашения и связать их со стратегическими целями компании.'
+            'Инновационная платформа для фиксации OKR и соглашений',
+            'Обеспечивает связь OKR на всех уровнях вашей организации',
+            'Promesa связывает соглашения со стратегическими целями компании'
         ],
-        image: {key: 'Platform+Overview', size: '500x300'}
+        image: { link: '/static/images/platform_overview.png', size: '500x300' }
     },
     {
-        title: 'Проблемы',
+        id: 'slide-1',
+        title: 'AI-Валидация договоренностей',
         description: [
-            'Множество договоренностей остаются в чатах, не структурированы и не связаны со стратегическими целями.',
-            'Дезорганизация информации.',
-            'Нет четкой связи между договоренностями и ответственными.',
-            'Руководители не могут отследить, какие договоренности превратились в задачи и как они влияют на OKR.',
-            'При работе над операционными задачами теряется связь текущих договоренностей и OKR.',
-            'Сложности в стратегическом планировании.'
+            'Каждая договоренность проверяется на соответствие OKR',
+            'Помогает убрать непрофильные активности'
         ],
-        image: {key: 'Problems', size: '500x300'}
+        image: { link: 'https://cdn.example.com/images/ai_validation.png', size: '500x300' }
     },
     {
-        title: 'Введение и цели проекта',
+        id: 'slide-2',
+        title: 'AI-Бот фиксации',
+        description: 'Бот разбирает треды чата, формирует договоренности и привязывает их к целям OKR.',
+        image: { link: '/slides/bot-response.png', size: '500x300' }
+    },
+    {
+        id: 'slide-3',
+        title: 'Дашборды и диаграммы',
         description: [
-            'Автоматическая фиксация договоренностей из мессенджеров и Talk.',
-            'Привязка каждой договоренности к конкретным OKR и ответственным лицам.',
-            'Создание единой платформы для ведения OKR и договоренностей.',
-            'Визуализация через дашборды и диаграммы.',
-            'Валидация договоренностей на соответствие OKR.',
-            'Система уведомлений и напоминаний для контроля сроков.'
+            'Все OKR отражаются на диаграмме Ганта',
+            'Визуализированы зависимости и ход работ'
         ],
-        image: {key: 'Goals', size: '500x300'}
+        image: { link: '/static/images/dashboards.png', size: '500x300' }
     },
     {
-        title: 'AI‑Бот для фиксации договоренностей',
-        description: 'Бот понимает треды в корпоративных чатах, формулирует договоренности на естественном языке и привязывает их к целям OKR.',
-        image: {key: 'Bot', size: '500x300'}
+        id: 'slide-4',
+        title: 'Система оповещений',
+        description: [
+            'Напоминания о сроках выполнения',
+            'Ответственные получают уведомление при приближении дедлайна'
+        ],
+        image: { link: 'https://cdn.example.com/images/notifications.png', size: '500x300' }
     },
     {
+        id: 'slide-5',
         title: 'Ключевые возможности',
         description: [
-            'Фиксация договоренностей из мессенджеров.',
-            'Работа с OKR и договоренностями через единый интерфейс.',
-            'Система оповещений и напоминаний.',
-            'Дашборды и диаграммы для визуализации процесса.',
-            'Валидация договоренностей на соответствие OKR.',
-            'Интеграция с Jira для автоматического создания задач.'
+            'Фиксация договоренностей из мессенджеров',
+            'Единый интерфейс для OKR и договоренностей',
+            'Система напоминаний',
+            'Дашборды и диаграммы',
+            'Валидация договоренностей',
+            'Интеграция с Jira'
         ],
-        image: {key: 'Features', size: '500x300'}
+        image: { link: '/static/images/features.png', size: '500x300' }
     }
 ];
 
-
 export default function MainPage() {
     const [introOpacity, setIntroOpacity] = useState(1);
+    const slideRefs = useRef([]);
 
+    // fade‑out intro
     useEffect(() => {
-        const handleScroll = () => {
-            const scrollTop = window.scrollY;
-            const fadeOutDistance = window.innerHeight * 0.6
-            const opacity = Math.max(0, 1 - scrollTop / fadeOutDistance);
+        const onScroll = () => {
+            const opacity = Math.max(0, 1 - (window.scrollY / window.innerHeight) * 2);
             setIntroOpacity(opacity);
         };
-        window.addEventListener("scroll", handleScroll);
-        return () => window.removeEventListener("scroll", handleScroll);
+        window.addEventListener('scroll', onScroll);
+        return () => window.removeEventListener('scroll', onScroll);
+    }, []);
+
+    // slide appear
+    useEffect(() => {
+        const io = new IntersectionObserver(
+            entries => entries.forEach(e => {
+                e.target.classList.toggle(styles.appear, e.isIntersecting);
+            }),
+            { threshold: 0.4 }
+        );
+        slideRefs.current.forEach(el => el && io.observe(el));
+        return () => io.disconnect();
     }, []);
 
     return (
         <main className={styles.main}>
-            {/* Intro Fullscreen with fade-out */}
-            <section className={styles.intro} style={{opacity: introOpacity}}>
-                <h1 className={styles.introTitle}>
-                    Promesa: единая платформа для OKR и договоренностей
-                </h1>
-                <p className={styles.introSubtitle}>
-                    Управляйте целями и соглашениями в одном интерфейсе. Привязывайте договоренности к стратегическим
-                    OKR и контролируйте выполнение задач.
-                </p>
+            <section className={styles.intro} style={{ opacity: introOpacity }}>
+                <h1 className={styles.introTitle}>Promesa: единая платформа для OKR и договоренностей</h1>
+                <p className={styles.introSubtitle}>Управляйте целями и соглашениями в одном интерфейсе. Привязывайте договоренности к стратегическим OKR и контролируйте выполнение задач.</p>
             </section>
 
-            {/* Presentation Slides */}
             {slides.map((slide, idx) => (
                 <section
-                    key={idx}
-                    className={`${styles.slide} ${
-                        idx % 2 === 0 ? styles.normal : styles.reverse
-                    }`}
+                    id={slide.id}
+                    key={slide.id}
+                    ref={el => (slideRefs.current[idx] = el)}
+                    className={`${styles.slide} ${idx % 2 === 0 ? styles.normal : styles.reverse}`}
                 >
                     <div className={styles.text}>
                         <h2 className={styles.title}>{slide.title}</h2>
-                        {Array.isArray(slide.description)
-                            ? slide.description.map((item, i) => (
-                                <p key={i} className={styles.desc}>
-                                    {item}
-                                </p>
-                            ))
-                            : <p className={styles.desc}>{slide.description}</p>
-                        }
+                        {(Array.isArray(slide.description) ? slide.description : [slide.description]).map((d, i) => (
+                            <p key={i} className={styles.desc}>{d}</p>
+                        ))}
                     </div>
                     <div className={styles.media}>
                         <img
-                            src={`https://placehold.co/${slide.image.size}?bg=EFEFEF&fg=AAAAAA&text=${encodeURIComponent(slide.image.key)}`}
+                            src={slide.image.link}
                             alt={slide.title}
                             className={styles.image}
+                            onError={e => {
+                                e.currentTarget.src = `https://placehold.co/${slide.image.size}?bg=EFEFEF&fg=AAAAAA&text=${encodeURIComponent(slide.title)}`;
+                            }}
                         />
                     </div>
                 </section>
